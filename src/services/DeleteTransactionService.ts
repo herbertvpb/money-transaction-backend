@@ -2,7 +2,8 @@
 
 class DeleteTransactionService {
   public async execute(): Promise<void> {
-    // TODO
+    const transactionsRepository = getCustomRepository(TransactionsRepository);
+    await transactionsRepository.delete({ id });
   }
 }
 
