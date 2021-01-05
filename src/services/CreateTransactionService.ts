@@ -1,4 +1,5 @@
 import { getCustomRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 import Transaction from '../models/Transaction';
 import CategoriesRepository from '../repositories/CategoriesRepository';
 import TransactionsRepository from '../repositories/TransactionsRepository';
@@ -23,6 +24,14 @@ class CreateTransactionService {
     const findCategory = await categoriesRepository.findCategoryByTitle(
       category,
     );
+
+    const balance = await transactionsRepository.getBalance();
+
+    if (type === 'outcome' && value > balance.total)
+      throw new AppError(
+        'Outcome value cannot be greater than the current balance',
+        400,
+      );
 
     const transaction = transactionsRepository.create({
       title,
